@@ -22,6 +22,7 @@ app.AppView = Backbone.View.extend(
 	# At initialization we bind the relevant events on the `Todos`
 	# collection, when items are changed or added
 	initialization: -> 
+		console.log 'init'
 		@allCheckbox = @$('#toggle-all')[0]
 		@$input = @$('#new-todo')
 		@$footer = @$('#footer')
@@ -40,6 +41,7 @@ app.AppView = Backbone.View.extend(
 	# Add a single todo item to the list by creating a view for it, and
 	# appending its element to the <ul>
 	addOne: ->
+		console.log "adding one"
 		view = new app.TodoView(model.Todo)
 		$('#todo-list').append view.render().el
 		return
@@ -65,9 +67,10 @@ app.AppView = Backbone.View.extend(
 	# If you hit return in the main input field, create new Todo model,
 	# persisting it to localStorage
 	createOnEnter: (event) ->
-		if (event which isnt ENTER_KEY or not @$input.val().trim() )
+		if (event.which isnt ENTER_KEY or not @$input.val().trim() )
 			return
 		app.Todos.create @newAttributes()
+		console.log @newAttributes
 		@input.val ''
 
 	# Clear all completed todo items, destroying their models

@@ -12,6 +12,7 @@ app.AppView = Backbone.View.extend({
     'click #toggle-all': 'toggleAllComplete'
   },
   initialization: function() {
+    console.log('init');
     this.allCheckbox = this.$('#toggle-all')[0];
     this.$input = this.$('#new-todo');
     this.$footer = this.$('#footer');
@@ -25,6 +26,7 @@ app.AppView = Backbone.View.extend({
   },
   addOne: function() {
     var view;
+    console.log("adding one");
     view = new app.TodoView(model.Todo);
     $('#todo-list').append(view.render().el);
   },
@@ -46,10 +48,11 @@ app.AppView = Backbone.View.extend({
     };
   },
   createOnEnter: function(event) {
-    if (event(which !== ENTER_KEY || !this.$input.val().trim())) {
+    if (event.which !== ENTER_KEY || !this.$input.val().trim()) {
       return;
     }
     app.Todos.create(this.newAttributes());
+    console.log(this.newAttributes);
     return this.input.val('');
   },
   clearCompleted: function() {

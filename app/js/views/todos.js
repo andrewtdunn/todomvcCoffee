@@ -12,9 +12,11 @@ app.TodoView = Backbone.View.extend({
     'blur .edit': 'close'
   },
   initialize: function() {
+    console.log('initialize');
     return this.listenTo(this.model, 'change', this.render);
   },
   render: function() {
+    console.log("render");
     this.$el.html(this.template(this.model.toJSON()));
     this.$input = this.$('edit');
     return this;

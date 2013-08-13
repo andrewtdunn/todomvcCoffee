@@ -25,10 +25,12 @@ app.TodoView = Backbone.View.extend(
 	# app, we set a direct reference on the model for convenience. 
 
 	initialize: ->
+		console.log 'initialize'
 		@listenTo @model, 'change', @render
 
 	# Rerenders the titles of the todo item.
 	render: ->
+		console.log "render"
 		@$el.html @template @model.toJSON()
 		@$input = @$('edit')
 		return @
