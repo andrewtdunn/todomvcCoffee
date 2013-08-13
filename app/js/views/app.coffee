@@ -21,7 +21,7 @@ app.AppView = Backbone.View.extend(
 
 	# At initialization we bind the relevant events on the `Todos`
 	# collection, when items are changed or added
-	initialization: -> 
+	initialize: -> 
 		console.log 'init'
 		@allCheckbox = @$('#toggle-all')[0]
 		@$input = @$('#new-todo')
@@ -49,7 +49,7 @@ app.AppView = Backbone.View.extend(
 				completed: completed
 				remaining: remaining
 			)
-			@$("#filters li a").removeClass("selected").filter("[href=\"#/" + (app.TodoFilter or "") + "\"}").addClass "selected"
+			@$("#filters li a").removeClass("selected").filter("[href=\"#/" + (app.TodoFilter or "") + "\"]").addClass "selected"
 		else
 			@$main.hide()
 			@$footer.hide()
@@ -57,9 +57,9 @@ app.AppView = Backbone.View.extend(
 		
 	# Add a single todo item to the list by creating a view for it, and
 	# appending its element to the <ul>
-	addOne: ->
+	addOne: (todo)->
 		console.log "adding one"
-		view = new app.TodoView(model.Todo)
+		view = new app.TodoView {model:todo}
 		$('#todo-list').append view.render().el
 		return
 

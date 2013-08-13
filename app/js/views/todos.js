@@ -13,21 +13,21 @@ app.TodoView = Backbone.View.extend({
   },
   initialize: function() {
     console.log('initialize');
-    return this.listenTo(this.model, 'change', this.render);
+    this.listenTo(this.model, 'change', this.render);
   },
   render: function() {
     console.log("render");
     this.$el.html(this.template(this.model.toJSON()));
-    this.$input = this.$('edit');
+    this.$input = this.$('.edit');
     return this;
   },
   edit: function() {
     this.$el.addClass('editing');
-    this.$input.focus;
+    this.$input.focus();
   },
   close: function() {
     var value;
-    value = this.$input.val(trim());
+    value = this.$input.val().trim();
     if (value) {
       this.model.save({
         title: value

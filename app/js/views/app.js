@@ -11,7 +11,7 @@ app.AppView = Backbone.View.extend({
     'click #clear-completed': 'clearCompleted',
     'click #toggle-all': 'toggleAllComplete'
   },
-  initialization: function() {
+  initialize: function() {
     console.log('init');
     this.allCheckbox = this.$('#toggle-all')[0];
     this.$input = this.$('#new-todo');
@@ -35,17 +35,19 @@ app.AppView = Backbone.View.extend({
         completed: completed,
         remaining: remaining
       }));
-      this.$("#filters li a").removeClass("selected").filter("[href=\"#/" + (app.TodoFilter || "") + "\"}").addClass("selected");
+      this.$("#filters li a").removeClass("selected").filter("[href=\"#/" + (app.TodoFilter || "") + "\"]").addClass("selected");
     } else {
       this.$main.hide();
       this.$footer.hide();
     }
     return this.allCheckbox.checked = !remaining;
   },
-  addOne: function() {
+  addOne: function(todo) {
     var view;
     console.log("adding one");
-    view = new app.TodoView(model.Todo);
+    view = new app.TodoView({
+      model: todo
+    });
     $('#todo-list').append(view.render().el);
   },
   addAll: function() {

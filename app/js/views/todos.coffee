@@ -27,23 +27,24 @@ app.TodoView = Backbone.View.extend(
 	initialize: ->
 		console.log 'initialize'
 		@listenTo @model, 'change', @render
+		return
 
 	# Rerenders the titles of the todo item.
 	render: ->
 		console.log "render"
 		@$el.html @template @model.toJSON()
-		@$input = @$('edit')
+		@$input = @$('.edit')
 		return @
 
 	# Switch this view into `"editing"` mode, displaying the input field
 	edit: ->
 		@$el.addClass 'editing'
-		@$input.focus
+		@$input.focus()
 		return
 
 	# Close the `"editing"` mode, saving changes to the model
 	close: ->
-		value = @$input.val trim()
+		value = @$input.val().trim()
 		@model.save {title: value} if value
 		@$el.removeClass 'editing'
 		return
