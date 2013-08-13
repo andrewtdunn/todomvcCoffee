@@ -38,6 +38,23 @@ app.AppView = Backbone.View.extend(
 		app.Todos.fetch()
 		return
 
+	render: ->
+		completed = app.Todos.completed().length
+		remaining = app.Todos.remaining().length
+
+		if app.Todos.length
+			@$main.show()
+			@$footer.show()
+			@$footer.html @statsTemplate(
+				completed: completed
+				remaining: remaining
+			)
+			@$("#filters li a").removeClass("selected").filter("[href=\"#/" + (app.TodoFilter or "") + "\"}").addClass "selected"
+		else
+			@$main.hide()
+			@$footer.hide()
+		@allCheckbox.checked = not remaining
+		
 	# Add a single todo item to the list by creating a view for it, and
 	# appending its element to the <ul>
 	addOne: ->
@@ -72,6 +89,7 @@ app.AppView = Backbone.View.extend(
 		app.Todos.create @newAttributes()
 		console.log @newAttributes
 		@input.val ''
+		return
 
 	# Clear all completed todo items, destroying their models
 	clearCompleted: ->
@@ -83,6 +101,8 @@ app.AppView = Backbone.View.extend(
 
 		app.Todos.each ( todo )->
 			todo.save {'completed':completed}
+			return
+		return
 )
 
 

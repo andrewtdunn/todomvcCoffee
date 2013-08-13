@@ -24,6 +24,24 @@ app.AppView = Backbone.View.extend({
     this.listenTo(app.Todos, 'all', this.render);
     app.Todos.fetch();
   },
+  render: function() {
+    var completed, remaining;
+    completed = app.Todos.completed().length;
+    remaining = app.Todos.remaining().length;
+    if (app.Todos.length) {
+      this.$main.show();
+      this.$footer.show();
+      this.$footer.html(this.statsTemplate({
+        completed: completed,
+        remaining: remaining
+      }));
+      this.$("#filters li a").removeClass("selected").filter("[href=\"#/" + (app.TodoFilter || "") + "\"}").addClass("selected");
+    } else {
+      this.$main.hide();
+      this.$footer.hide();
+    }
+    return this.allCheckbox.checked = !remaining;
+  },
   addOne: function() {
     var view;
     console.log("adding one");
@@ -53,7 +71,7 @@ app.AppView = Backbone.View.extend({
     }
     app.Todos.create(this.newAttributes());
     console.log(this.newAttributes);
-    return this.input.val('');
+    this.input.val('');
   },
   clearCompleted: function() {
     _.invoke(app.Todo.completed(), 'destroy');
@@ -62,8 +80,8 @@ app.AppView = Backbone.View.extend({
   toggleAllComplete: function() {
     var completed;
     completed = this.allCheckbox.completed;
-    return app.Todos.each(function(todo) {
-      return todo.save({
+    app.Todos.each(function(todo) {
+      todo.save({
         'completed': completed
       });
     });
