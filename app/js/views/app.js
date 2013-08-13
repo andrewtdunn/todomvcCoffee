@@ -5,7 +5,7 @@ app = app || {};
 
 app.AppView = Backbone.View.extend({
   el: '#todoapp',
-  statsTemplate: _.template($('#statsTemplate').html()),
+  statsTemplate: _.template($('#stats-template').html()),
   events: {
     'keypress #new-todo': 'createOnEnter',
     'click #clear-completed': 'clearCompleted',
@@ -18,6 +18,10 @@ app.AppView = Backbone.View.extend({
     this.$main = $('#main');
     this.listenTo(app.Todos, 'add', this.addOne);
     this.listenTo(app.Todos, 'reset', this.addAll);
+    this.listenTo(app.Todos, 'change:completed', this.filterOne);
+    this.listenTo(app.Todos, 'filter', this.filterAll);
+    this.listenTo(app.Todos, 'all', this.render);
+    app.Todos.fetch();
   },
   addOne: function() {
     var view;
@@ -27,5 +31,38 @@ app.AppView = Backbone.View.extend({
   addAll: function() {
     this.$('#todo-list').html('');
     app.Todos.each(this.addOne, this);
+  },
+  filterOne: function(todo) {
+    return todo.trigger('visible');
+  },
+  filterAll: function() {
+    return app.todos.each(this.filterOne, this);
+  },
+  newAttributes: function() {
+    return {
+      title: this.$input.val().trim(),
+      order: app.Todos.nextOrder,
+      completed: false
+    };
+  },
+  createOnEnter: function(event) {
+    if (event(which !== ENTER_KEY || !this.$input.val().trim())) {
+      return;
+    }
+    app.Todos.create(this.newAttributes());
+    return this.input.val('');
+  },
+  clearCompleted: function() {
+    _.invoke(app.Todo.completed(), 'destroy');
+    return false;
+  },
+  toggleAllComplete: function() {
+    var completed;
+    completed = this.allCheckbox.completed;
+    return app.Todos.each(function(todo) {
+      return todo.save({
+        'completed': completed
+      });
+    });
   }
 });

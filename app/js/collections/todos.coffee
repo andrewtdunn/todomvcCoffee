@@ -21,8 +21,8 @@ TodoList = Backbone.Collection.extend(
 		new Backbone.LocalStorage('todos-backbone')
 
 	# Filter Down the lest of all todo items that are finished
-	completed:  
-		@filter (todo) ->
+	completed: -> 
+		@filter (todo) ->	
 			todo.get('completed')
 
 	# Filter down the list to only todo items that are still not finished

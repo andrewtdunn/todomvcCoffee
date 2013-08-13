@@ -11,7 +11,7 @@ app.AppView = Backbone.View.extend(
 
 	# our template for the line of statistics at the bottom of the app
 	statsTemplate: 
-		_.template($('#statsTemplate').html())
+		_.template($('#stats-template').html())
 
 	# Delegated events for creating new items, and clearing completed ones
 	events: 
@@ -29,6 +29,12 @@ app.AppView = Backbone.View.extend(
 
 		@listenTo(app.Todos, 'add', @addOne)
 		@listenTo(app.Todos, 'reset', @addAll)
+
+		@listenTo(app.Todos, 'change:completed', @filterOne)
+		@listenTo(app.Todos, 'filter', @filterAll)
+		@listenTo(app.Todos, 'all', @render)
+
+		app.Todos.fetch()
 		return
 
 	# Add a single todo item to the list by creating a view for it, and
@@ -44,6 +50,89 @@ app.AppView = Backbone.View.extend(
 		app.Todos.each @addOne, this
 		return
 
+	filterOne: (todo) ->
+		todo.trigger 'visible'
 
+	filterAll: ->
+		app.todos.each @filterOne, this
 
+	# Generates the attributes for a new todo item
+	newAttributes: ->
+		title: @$input.val().trim()
+		order: app.Todos.nextOrder
+		completed: false
+
+	# If you hit return in the main input field, create new Todo model,
+	# persisting it to localStorage
+	createOnEnter: (event) ->
+		if (event which isnt ENTER_KEY or not @$input.val().trim() )
+			return
+		app.Todos.create @newAttributes()
+		@input.val ''
+
+	# Clear all completed todo items, destroying their models
+	clearCompleted: ->
+		_.invoke app.Todo.completed(), 'destroy'
+		return false
+
+	toggleAllComplete: ->
+		completed = @allCheckbox.completed
+
+		app.Todos.each ( todo )->
+			todo.save {'completed':completed}
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
