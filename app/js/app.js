@@ -6,6 +6,5 @@ app = app || {};
 ENTER_KEY = 13;
 
 $(function() {
-  console.log("begining");
   new app.AppView();
 });

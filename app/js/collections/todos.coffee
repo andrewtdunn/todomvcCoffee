@@ -18,7 +18,7 @@ TodoList = Backbone.Collection.extend(
 	# in the console without this present, comment out the next line
 	# to avoid running into an exception
 	localStorage: 
-		new Backbone.LocalStorage('todos-backbone')
+		new Store('todos-backbone')
 
 	# Filter Down the lest of all todo items that are finished
 	completed: -> 

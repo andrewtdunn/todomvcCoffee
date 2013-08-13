@@ -14,4 +14,5 @@ app.Todo = Backbone.Model.extend(
 
   toggle: ->
     @save completed: not @get("completed")
+    return
 )

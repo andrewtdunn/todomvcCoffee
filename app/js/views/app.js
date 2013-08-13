@@ -13,15 +13,15 @@ app.AppView = Backbone.View.extend({
   },
   initialize: function() {
     console.log('init');
+    this.input = this.$('#new-todo');
     this.allCheckbox = this.$('#toggle-all')[0];
-    this.$input = this.$('#new-todo');
     this.$footer = this.$('#footer');
     this.$main = $('#main');
-    this.listenTo(app.Todos, 'add', this.addOne);
-    this.listenTo(app.Todos, 'reset', this.addAll);
-    this.listenTo(app.Todos, 'change:completed', this.filterOne);
-    this.listenTo(app.Todos, 'filter', this.filterAll);
-    this.listenTo(app.Todos, 'all', this.render);
+    window.app.Todos.on('add', this.addOne, this);
+    window.app.Todos.on('reset', this.addAll, this);
+    window.app.Todos.on('change:completed', this.filterOne, this);
+    window.app.Todos.on('filter', this.filterAll, this);
+    window.app.Todos.on('all', this.render, this);
     app.Todos.fetch();
   },
   render: function() {
@@ -58,30 +58,29 @@ app.AppView = Backbone.View.extend({
     return todo.trigger('visible');
   },
   filterAll: function() {
-    return app.todos.each(this.filterOne, this);
+    return app.Todos.each(this.filterOne, this);
   },
   newAttributes: function() {
     return {
-      title: this.$input.val().trim(),
-      order: app.Todos.nextOrder,
+      title: this.input.val().trim(),
+      order: app.Todos.nextOrder(),
       completed: false
     };
   },
   createOnEnter: function(event) {
-    if (event.which !== ENTER_KEY || !this.$input.val().trim()) {
+    if (event.which !== ENTER_KEY || !this.input.val().trim()) {
       return;
     }
     app.Todos.create(this.newAttributes());
-    console.log(this.newAttributes);
     this.input.val('');
   },
   clearCompleted: function() {
-    _.invoke(app.Todo.completed(), 'destroy');
+    _.invoke(app.Todos.completed(), 'destroy');
     return false;
   },
   toggleAllComplete: function() {
     var completed;
-    completed = this.allCheckbox.completed;
+    completed = this.allCheckbox.checked;
     app.Todos.each(function(todo) {
       todo.save({
         'completed': completed

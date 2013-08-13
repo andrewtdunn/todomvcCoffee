@@ -23,17 +23,17 @@ app.AppView = Backbone.View.extend(
 	# collection, when items are changed or added
 	initialize: -> 
 		console.log 'init'
+		@input = @$('#new-todo')
 		@allCheckbox = @$('#toggle-all')[0]
-		@$input = @$('#new-todo')
 		@$footer = @$('#footer')
 		@$main = $('#main')
 
-		@listenTo(app.Todos, 'add', @addOne)
-		@listenTo(app.Todos, 'reset', @addAll)
+		window.app.Todos.on 'add', @addOne, @
+		window.app.Todos.on 'reset', @addAll, @
 
-		@listenTo(app.Todos, 'change:completed', @filterOne)
-		@listenTo(app.Todos, 'filter', @filterAll)
-		@listenTo(app.Todos, 'all', @render)
+		window.app.Todos.on 'change:completed', @filterOne, @
+		window.app.Todos.on 'filter', @filterAll, @
+		window.app.Todos.on 'all', @render, @
 
 		app.Todos.fetch()
 		return
@@ -73,31 +73,30 @@ app.AppView = Backbone.View.extend(
 		todo.trigger 'visible'
 
 	filterAll: ->
-		app.todos.each @filterOne, this
+		app.Todos.each @filterOne, this
 
 	# Generates the attributes for a new todo item
 	newAttributes: ->
-		title: @$input.val().trim()
-		order: app.Todos.nextOrder
+		title: @input.val().trim()
+		order: app.Todos.nextOrder()
 		completed: false
 
 	# If you hit return in the main input field, create new Todo model,
 	# persisting it to localStorage
 	createOnEnter: (event) ->
-		if (event.which isnt ENTER_KEY or not @$input.val().trim() )
+		if (event.which isnt ENTER_KEY or not @input.val().trim() )
 			return
 		app.Todos.create @newAttributes()
-		console.log @newAttributes
 		@input.val ''
 		return
 
 	# Clear all completed todo items, destroying their models
 	clearCompleted: ->
-		_.invoke app.Todo.completed(), 'destroy'
+		_.invoke app.Todos.completed(), 'destroy'
 		return false
 
 	toggleAllComplete: ->
-		completed = @allCheckbox.completed
+		completed = @allCheckbox.checked
 
 		app.Todos.each ( todo )->
 			todo.save {'completed':completed}
